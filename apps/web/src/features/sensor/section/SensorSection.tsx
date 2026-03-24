@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { Client } from "@opensearch-project/opensearch";
+import { esClient } from "@/es7/client";
 import { getAllSensorData } from "@/es7/search";
 import { SensorCard } from "@wors/ui/sensor-card";
 import { RangeBar } from "@wors/ui/range-bar";
@@ -19,18 +19,7 @@ export function SensorSectionSkeleton() {
 }
 
 async function SensorCards({ station, cards }: { station: string; cards: SensorCardConfig[] }) {
-  const client = new Client({
-    node: process.env.ES7_HOST,
-    auth: {
-      username: process.env.ES7_USERNAME!,
-      password: process.env.ES7_PASSWORD!,
-    },
-    ssl: {
-      rejectUnauthorized: false,
-    },
-  });
-
-  const allData = await getAllSensorData(client, station);
+  const allData = await getAllSensorData(esClient, station);
 
   const getSensorValue = (key: string): number | undefined => {
     const value = allData[key]?.data?.value;
