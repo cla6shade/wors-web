@@ -2,8 +2,6 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { recordVisit } from "@wors/shared/visitors";
 
-export const runtime = "nodejs";
-
 function toKstDate(): string {
   const kst = new Date(Date.now() + 9 * 60 * 60 * 1000);
   const y = kst.getUTCFullYear();
