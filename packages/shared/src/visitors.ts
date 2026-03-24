@@ -32,24 +32,33 @@ function getDb(): Database.Database {
   return _db;
 }
 
-/** Record a visit for today. */
-export function recordVisit(): void {
+/** Record a visit for a given date (YYYY-MM-DD). Defaults to today in KST. */
+export function recordVisit(date?: string): void {
   const db = getDb();
-  const today = new Date().toISOString().slice(0, 10);
+  const d = date ?? toKstDateString();
   db.prepare(
     `INSERT INTO visits (date, count) VALUES (?, 1)
      ON CONFLICT(date) DO UPDATE SET count = count + 1`
-  ).run(today);
+  ).run(d);
 }
 
 export type DailyVisits = { date: string; count: number };
+
+/** KST 기준 YYYY-MM-DD */
+function toKstDateString(d: Date = new Date()): string {
+  const kst = new Date(d.getTime() + 9 * 60 * 60 * 1000);
+  const y = kst.getUTCFullYear();
+  const m = String(kst.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(kst.getUTCDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
 
 /** Get daily visit counts for the last N days (default 30). */
 export function getVisits(days = 30): DailyVisits[] {
   const db = getDb();
   const since = new Date();
   since.setDate(since.getDate() - days + 1);
-  const sinceStr = since.toISOString().slice(0, 10);
+  const sinceStr = toKstDateString(since);
 
   return db
     .prepare(
@@ -61,20 +70,18 @@ export function getVisits(days = 30): DailyVisits[] {
 /** Get today's visit count. */
 export function getTodayVisits(): number {
   const db = getDb();
-  const today = new Date().toISOString().slice(0, 10);
   const row = db
     .prepare(`SELECT count FROM visits WHERE date = ?`)
-    .get(today) as { count: number } | undefined;
+    .get(toKstDateString()) as { count: number } | undefined;
   return row?.count ?? 0;
 }
 
 /** Get this month's total visit count. */
 export function getMonthlyVisits(): number {
   const db = getDb();
-  const monthPrefix = new Date().toISOString().slice(0, 7); // "YYYY-MM"
   const row = db
     .prepare(`SELECT COALESCE(SUM(count), 0) AS total FROM visits WHERE date LIKE ?`)
-    .get(`${monthPrefix}%`) as { total: number };
+    .get(`${toKstDateString().slice(0, 7)}%`) as { total: number };
   return row.total;
 }
 
@@ -86,7 +93,7 @@ export function getMonthlyVisitHistory(months = 12): MonthlyVisits[] {
   const since = new Date();
   since.setMonth(since.getMonth() - months + 1);
   since.setDate(1);
-  const sinceStr = since.toISOString().slice(0, 10);
+  const sinceStr = toKstDateString(since);
 
   return db
     .prepare(

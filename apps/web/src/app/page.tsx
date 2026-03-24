@@ -3,12 +3,10 @@ import AutoRefresh from "@/components/AutoRefresh";
 import SensorSection from "@/features/sensor/section/SensorSection";
 import EmbedSection from "@/features/embed/EmbedSection";
 import { readSettings } from "@wors/shared/settings";
-import { recordVisit } from "@wors/shared/visitors";
 
 export const dynamic = 'force-dynamic'
 
 export default async function Home() {
-  recordVisit();
   const settings = readSettings();
   const dashboard = settings.dashboard;
   const title = dashboard?.title || "왕돌초 해양과학기지";
