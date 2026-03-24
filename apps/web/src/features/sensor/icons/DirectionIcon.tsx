@@ -1,5 +1,6 @@
 import CardIcon from "./CardIcon";
-import UndefinedBoundary, { CardIconFallback } from "./UndefinedBoundary";
+import CardIconFallback from "./CardIconFallback";
+import UndefinedBoundary from "./UndefinedBoundary";
 
 interface DirectionIconProps {
   scale?: number;

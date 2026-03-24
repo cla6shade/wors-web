@@ -1,6 +1,4 @@
 import { ReactNode } from "react";
-import { CircleQuestionMark } from 'lucide-react';
-import CardIcon from "./CardIcon";
 
 interface UndefinedBoundaryProps {
   value?: unknown;
@@ -12,10 +10,4 @@ export default function UndefinedBoundary({ value, fallback = <p className="p-4"
     return fallback;
   }
   return children;
-}
-
-export function CardIconFallback() {
-  return (
-    <CardIcon><CircleQuestionMark /></CardIcon>
-  )
 }

@@ -1,9 +1,9 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { RotateCcw } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { RotateCcw } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function ReloadButton() {
   const router = useRouter();

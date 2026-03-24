@@ -1,13 +1,13 @@
 import { Client } from "@opensearch-project/opensearch";
 import { ESDocument, SensorData } from "./types";
-import { unstable_noStore as noStore } from "next/cache";
-import sensorsData from "../../sensors.json";
+import { readSettings } from "@wors/shared/settings";
 
 export async function getLatestSensorData(
   client: Client,
   station: string,
   tagId: string,
-  filter20min: boolean = false
+  filter20min: boolean = false,
+  rangeMinutes: number = 30,
 ): Promise<ESDocument | null> {
   const must: Record<string, unknown>[] = [
     { match: { station: station } },
@@ -15,7 +15,7 @@ export async function getLatestSensorData(
     {
       range: {
         logdate: {
-          gte: "now-10m",
+          gte: `now-${rangeMinutes}m`,
           lte: "now",
         },
       },
@@ -64,8 +64,10 @@ return minutes == 0 || minutes == 20 || minutes == 40;
 }
 
 export async function getAllSensorData(client: Client, station: string): Promise<SensorData> {
-  const sensors = sensorsData as unknown as Record<string, Record<string, string>>;
-  const stationSensors = sensors[station];
+  const settings = readSettings();
+  const dashboard = settings.dashboard;
+  const stationSensors = dashboard?.sensors?.[station];
+  const rangeMinutes = dashboard?.refreshIntervalMin ?? 30;
 
   if (!stationSensors) {
     console.error(`Station ${station} not found in sensors.json`);
@@ -79,7 +81,8 @@ export async function getAllSensorData(client: Client, station: string): Promise
         client,
         station,
         tagId,
-        isWaveHeight
+        isWaveHeight,
+        rangeMinutes,
       );
       return { tagId, meaning, data };
     }
