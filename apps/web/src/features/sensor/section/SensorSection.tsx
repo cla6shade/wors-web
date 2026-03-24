@@ -7,6 +7,16 @@ import ReloadButton from "../ReloadButton";
 import { readSettings } from "@wors/shared/settings";
 import type { SensorCardConfig } from "@wors/shared/settings";
 
+export function SensorSectionSkeleton() {
+  return (
+    <section className="grid grid-cols-2 md:grid-cols-3 gap-6 w-full">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <div key={i} className="h-[250px] rounded-lg bg-white/70 shadow-2xl animate-pulse" />
+      ))}
+    </section>
+  );
+}
+
 export default async function SensorSection() {
   const settings = readSettings();
   const dashboard = settings.dashboard;
