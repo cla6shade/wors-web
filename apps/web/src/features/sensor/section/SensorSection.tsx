@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { Client } from "@opensearch-project/opensearch";
 import { getAllSensorData } from "@/es7/search";
 import { SensorCard } from "@wors/ui/sensor-card";
@@ -17,12 +18,7 @@ export function SensorSectionSkeleton() {
   );
 }
 
-export default async function SensorSection() {
-  const settings = readSettings();
-  const dashboard = settings.dashboard;
-
-  if (!dashboard) return null;
-
+async function SensorCards({ station, cards }: { station: string; cards: SensorCardConfig[] }) {
   const client = new Client({
     node: process.env.ES7_HOST,
     auth: {
@@ -34,12 +30,36 @@ export default async function SensorSection() {
     },
   });
 
-  const allData = await getAllSensorData(client, dashboard.station);
+  const allData = await getAllSensorData(client, station);
 
   const getSensorValue = (key: string): number | undefined => {
     const value = allData[key]?.data?.value;
     return value !== undefined ? Number(Number(value).toFixed(1)) : undefined;
   };
+
+  return (
+    <section className="grid grid-cols-2 md:grid-cols-3 gap-6 w-full">
+      {cards.map((card, index) => (
+        <SensorCardRenderer key={index} config={card} getSensorValue={getSensorValue} />
+      ))}
+      <div className="col-span-2 md:col-span-3 rounded-lg bg-white/50 backdrop-blur-sm px-6 py-4 text-slate-700">
+        <p className="text-lg">해당 자료는 참고자료입니다.</p>
+        <p className="text-base mt-1 text-slate-500">
+          문의사항 및 의견 &rarr;{" "}
+          <a href="mailto:kors@kiost.ac.kr" className="font-medium underline underline-offset-4 hover:text-slate-700">
+            kors@kiost.ac.kr
+          </a>
+        </p>
+      </div>
+    </section>
+  );
+}
+
+export default function SensorSection() {
+  const settings = readSettings();
+  const dashboard = settings.dashboard;
+
+  if (!dashboard) return null;
 
   const now = new Date();
 
@@ -53,21 +73,9 @@ export default async function SensorSection() {
         </div>
       </header>
 
-      <section className="grid grid-cols-2 md:grid-cols-3 gap-6 w-full">
-        {dashboard.sensorCards.map((card, index) => (
-          <SensorCardRenderer key={index} config={card} getSensorValue={getSensorValue} />
-        ))}
-        <div className="col-span-2 md:col-span-3 rounded-lg bg-white/50 backdrop-blur-sm px-6 py-4 text-slate-700">
-          <p className="text-lg">해당 자료는 참고자료입니다.</p>
-          <p className="text-base mt-1 text-slate-500">
-            문의사항 및 의견 &rarr;{" "}
-            <a href="mailto:kors@kiost.ac.kr" className="font-medium underline underline-offset-4 hover:text-slate-700">
-              kors@kiost.ac.kr
-            </a>
-          </p>
-        </div>
-      </section>
-
+      <Suspense fallback={<SensorSectionSkeleton />}>
+        <SensorCards station={dashboard.station} cards={dashboard.sensorCards} />
+      </Suspense>
     </>
   );
 }

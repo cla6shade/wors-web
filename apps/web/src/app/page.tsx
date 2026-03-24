@@ -1,7 +1,6 @@
 import Image from "next/image";
-import { Suspense } from "react";
 import AutoRefresh from "@/components/AutoRefresh";
-import SensorSection, { SensorSectionSkeleton } from "@/features/sensor/section/SensorSection";
+import SensorSection from "@/features/sensor/section/SensorSection";
 import EmbedSection from "@/features/embed/EmbedSection";
 import { readSettings } from "@wors/shared/settings";
 
@@ -36,9 +35,7 @@ export default async function Home() {
 
           <main className="w-full max-w-7xl mx-auto flex flex-col gap-12 pt-4">
 
-            <Suspense fallback={<SensorSectionSkeleton />}>
-              <SensorSection />
-            </Suspense>
+            <SensorSection />
             <EmbedSection embeds={embeds} />
           </main>
         </div>
