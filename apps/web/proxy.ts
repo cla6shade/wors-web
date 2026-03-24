@@ -28,10 +28,10 @@ export function proxy(request: NextRequest) {
   if (visited !== today) {
     recordVisit(today);
     response.cookies.set("wors_visited", today, {
-      httpOnly: true,
+      httpOnly: false,
       sameSite: "strict",
       expires: kstEndOfDay(today),
-      path: "/",
+      path: "/wors",
     });
   }
 
@@ -39,5 +39,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: "/",
+  matcher: ["/wors", "/wors/", "/"],
 };
