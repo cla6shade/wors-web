@@ -15,8 +15,8 @@ export async function getLatestSensorData(
     {
       range: {
         logdate: {
-          gte: "now-1d/d",
-          lte: "now+1d/d",
+          gte: "now-10m",
+          lte: "now",
         },
       },
     },
