@@ -6,6 +6,8 @@
     "dev": "pnpm --filter @wors/web dev",
     "dev:admin": "pnpm --filter @wors/admin dev",
     "build": "pnpm -r build",
+    "start": "pnpm --filter @wors/web start",
+    "start:admin": "pnpm --filter @wors/admin start",
     "lint": "pnpm -r lint"
   }
 }
