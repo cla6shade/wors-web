@@ -40,14 +40,14 @@ export async function setSessionCookie(): Promise<void> {
   cookieStore.set(SESSION_COOKIE, value, {
     httpOnly: true,
     sameSite: "lax",
-    path: "/wors-admin",
+    path: "/wors-edit",
     maxAge: SESSION_MAX_AGE,
   });
 }
 
 export async function clearSessionCookie(): Promise<void> {
   const cookieStore = await cookies();
-  cookieStore.delete({ name: SESSION_COOKIE, path: "/wors-admin" });
+  cookieStore.delete({ name: SESSION_COOKIE, path: "/wors-edit" });
 }
 
 export async function verifySession(): Promise<boolean> {
