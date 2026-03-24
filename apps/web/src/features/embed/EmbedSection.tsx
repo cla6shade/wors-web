@@ -16,6 +16,7 @@ export default function EmbedSection({ embeds }: { embeds: YouTubeEmbedConfig[] 
               src={embed.url}
               title="YouTube video player"
               frameBorder="0"
+              loading="lazy"
               className="absolute top-0 left-0 w-full h-full rounded-lg"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               referrerPolicy="strict-origin-when-cross-origin"
