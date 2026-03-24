@@ -7,6 +7,10 @@
     "./settings": {
       "types": "./dist/settings.d.ts",
       "default": "./dist/settings.js"
+    },
+    "./visitors": {
+      "types": "./dist/visitors.d.ts",
+      "default": "./dist/visitors.js"
     }
   },
   "scripts": {
@@ -14,9 +18,11 @@
     "dev": "tsc --watch"
   },
   "dependencies": {
+    "better-sqlite3": "^12.8.0",
     "server-only": "^0.0.1"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^20.19.37",
     "typescript": "^5"
   }
