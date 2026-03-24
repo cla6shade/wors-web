@@ -18,6 +18,7 @@ function kstEndOfDay(dateStr: string): Date {
 }
 
 export function proxy(request: NextRequest) {
+  console.log("[proxy] pathname:", request.nextUrl.pathname, "| cookie:", request.cookies.get("wors_visited")?.value);
   const today = toKstDate();
   const visited = request.cookies.get("wors_visited")?.value;
 
