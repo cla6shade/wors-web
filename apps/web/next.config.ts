@@ -8,4 +8,8 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: ['http://localhost:3001', 'http://10.104.1.80:3001'],
 };
 
-export default nextConfig;
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+})
+
+export default withBundleAnalyzer(nextConfig);
