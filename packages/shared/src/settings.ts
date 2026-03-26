@@ -1,6 +1,7 @@
 import "server-only";
 
-import { readFileSync, writeFileSync, existsSync } from "node:fs";
+import Database from "better-sqlite3";
+import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 
 export type VectorCardConfig = {
@@ -70,18 +71,39 @@ function findMonorepoRoot(startDir: string): string {
   }
 }
 
-const SETTINGS_PATH = resolve(findMonorepoRoot(process.cwd()), "settings.json");
+const DB_PATH = resolve(findMonorepoRoot(process.cwd()), "settings.sqlite3");
+
+let _db: Database.Database | null = null;
+
+function getDb(): Database.Database {
+  if (!_db) {
+    _db = new Database(DB_PATH);
+    _db.pragma("journal_mode = WAL");
+    _db.exec(`
+      CREATE TABLE IF NOT EXISTS settings (
+        key TEXT PRIMARY KEY,
+        value TEXT NOT NULL
+      )
+    `);
+  }
+  return _db;
+}
 
 export function readSettings(): Settings {
-  if (!existsSync(SETTINGS_PATH)) {
-    return {};
-  }
-  const raw = readFileSync(SETTINGS_PATH, "utf-8");
-  return JSON.parse(raw) as Settings;
+  const db = getDb();
+  const row = db
+    .prepare(`SELECT value FROM settings WHERE key = ?`)
+    .get("settings") as { value: string } | undefined;
+  if (!row) return {};
+  return JSON.parse(row.value) as Settings;
 }
 
 export function writeSettings(settings: Settings): void {
-  writeFileSync(SETTINGS_PATH, JSON.stringify(settings, null, 2), "utf-8");
+  const db = getDb();
+  db.prepare(
+    `INSERT INTO settings (key, value) VALUES (?, ?)
+     ON CONFLICT(key) DO UPDATE SET value = excluded.value`
+  ).run("settings", JSON.stringify(settings));
 }
 
 export function updateSettings(partial: Partial<Settings>): Settings {
