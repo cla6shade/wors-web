@@ -8,6 +8,7 @@
     "build": "pnpm -r build",
     "start": "pnpm --filter @wors/web start",
     "start:admin": "pnpm --filter @wors/admin start",
-    "lint": "pnpm -r lint"
+    "lint": "pnpm -r lint",
+    "migrate:settings": "node packages/shared/scripts/migrate-settings.cjs"
   }
 }
