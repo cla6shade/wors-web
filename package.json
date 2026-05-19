@@ -9,6 +9,10 @@
     "start": "pnpm --filter @wors/web start",
     "start:admin": "pnpm --filter @wors/admin start",
     "lint": "pnpm -r lint",
-    "migrate:settings": "node packages/shared/scripts/migrate-settings.cjs"
+    "migrate:settings": "node packages/shared/scripts/migrate-settings.cjs",
+    "deploy:ssh": "node scripts/deploy.mjs"
+  },
+  "devDependencies": {
+    "globby": "^16.2.0"
   }
 }
