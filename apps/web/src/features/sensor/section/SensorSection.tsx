@@ -23,8 +23,11 @@ async function SensorCards({ station, cards }: { station: string; cards: SensorC
 
   const getSensorValue = (key: string): number | undefined => {
     const value = allData[key]?.data?.value;
-    return value !== undefined ? Number(Number(value).toFixed(1)) : undefined;
+    return value !== undefined ? Number(value) : undefined;
   };
+
+  const formatValue = (value: number | undefined): string | undefined =>
+    value !== undefined ? value.toFixed(1) : undefined;
 
   return (
     <section className="grid grid-cols-2 md:grid-cols-3 gap-6 w-full">
@@ -38,7 +41,12 @@ async function SensorCards({ station, cards }: { station: string; cards: SensorC
         </p>
       </div>
       {cards.map((card, index) => (
-        <SensorCardRenderer key={index} config={card} getSensorValue={getSensorValue} />
+        <SensorCardRenderer
+          key={index}
+          config={card}
+          getSensorValue={getSensorValue}
+          formatValue={formatValue}
+        />
       ))}
     </section>
   );
@@ -72,9 +80,11 @@ export default function SensorSection() {
 function SensorCardRenderer({
   config,
   getSensorValue,
+  formatValue,
 }: {
   config: SensorCardConfig;
   getSensorValue: (key: string) => number | undefined;
+  formatValue: (value: number | undefined) => string | undefined;
 }) {
   if (config.preparing) {
     return (
@@ -96,7 +106,7 @@ function SensorCardRenderer({
           <SensorCard.Header title={config.title} />
           <SensorCard.Vector
             direction={direction}
-            scale={scale}
+            scale={formatValue(scale)}
             unit={config.unit}
             variant={config.variant}
             caption={createAngleIndicator(direction, config.directionSuffix, config.reverseDirection)}
@@ -109,14 +119,14 @@ function SensorCardRenderer({
       return (
         <SensorCard>
           <SensorCard.Header title={config.title} />
-          <SensorCard.Scalar value={value} unit={config.unit} />
+          <SensorCard.Scalar value={formatValue(value)} unit={config.unit} />
         </SensorCard>
       );
     }
     case "range": {
       let value = getSensorValue(config.sensorId);
       if (value !== undefined && config.valueDivisor) {
-        value = Number((value / config.valueDivisor).toFixed(1));
+        value = value / config.valueDivisor;
       }
       return (
         <SensorCard>
@@ -126,10 +136,10 @@ function SensorCardRenderer({
               <RangeBar range={{ start: config.rangeStart, end: config.rangeEnd }} value={value} unit={config.unit} />
             </div>
             <div className="h-6 w-full justify-between flex text-slate-600 text-sm">
-              <p>{config.rangeStart}{config.unit}</p>
-              <p>{config.rangeEnd}{config.unit}</p>
+              <p>{config.rangeStart.toFixed(1)}{config.unit}</p>
+              <p>{config.rangeEnd.toFixed(1)}{config.unit}</p>
             </div>
-            <SensorCard.Scalar value={value} unit={config.unit} />
+            <SensorCard.Scalar value={formatValue(value)} unit={config.unit} />
           </div>
         </SensorCard>
       );
