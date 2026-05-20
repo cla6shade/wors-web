@@ -28,7 +28,7 @@ async function SensorCards({ station, cards }: { station: string; cards: SensorC
 
   return (
     <section className="grid grid-cols-2 md:grid-cols-3 gap-6 w-full">
-            <div className="col-span-2 md:col-span-3 rounded-lg bg-white/50 backdrop-blur-sm px-6 py-4 text-slate-700">
+      <div className="col-span-2 md:col-span-3 rounded-lg bg-white/50 backdrop-blur-sm px-6 py-4 text-slate-700">
         <p className="text-lg">본 기관에서 제공하는 관측 자료는 일반적인 정보 안내와 연구를 돕기 위한 참고용입니다. 자료의 정확성이나 최신성을 완벽히 보장하지 않으며, 법적·상업적 결정 또는 항해를 위한 단독 근거로 사용하기에는 부적절합니다. 따라서 본 자료를 활용하여 발생하는 결과나 손해에 대해 본 기관은 책임을 지지 않음을 알려드립니다.</p>
         <p className="text-base mt-1 text-slate-500">
           문의사항 및 의견 &rarr;{" "}
