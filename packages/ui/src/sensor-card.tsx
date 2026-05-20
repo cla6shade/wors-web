@@ -24,7 +24,7 @@ function SensorCardHeader({ title, children, ...props }: HeaderProps) {
 }
 
 type ValueProps = {
-  value?: number;
+  value?: number | string;
   unit: string;
   className?: string;
   fallback?: React.ReactNode;
@@ -39,7 +39,7 @@ function SensorCardValue({ value, unit, className, fallback }: ValueProps) {
 }
 
 type ScalarProps = {
-  value?: number;
+  value?: number | string;
   unit: string;
   fallback?: React.ReactNode;
 };
@@ -56,7 +56,7 @@ function SensorCardScalar({ value, unit, fallback }: ScalarProps) {
 }
 
 type VectorProps = {
-  scale?: number;
+  scale?: number | string;
   unit: string;
   direction?: number;
   caption?: string;
