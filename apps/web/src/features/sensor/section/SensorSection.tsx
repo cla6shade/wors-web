@@ -116,7 +116,7 @@ function SensorCardRenderer({
     case "range": {
       let value = getSensorValue(config.sensorId);
       if (value !== undefined && config.valueDivisor) {
-        value = value / config.valueDivisor;
+        value = Number((value / config.valueDivisor).toFixed(1));
       }
       return (
         <SensorCard>
